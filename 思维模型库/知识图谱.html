@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>思维模型库 · 知识图谱</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a0f; color: #e0e0e0; font-family: -apple-system, 'Segoe UI', sans-serif; overflow: hidden; }
+
+  #container { width: 100vw; height: 100vh; position: relative; }
+
+  svg { width: 100%; height: 100%; }
+
+  .node-label {
+    font-size: 11px;
+    fill: #ccc;
+    pointer-events: none;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+
+  .link { stroke-opacity: 0.4; }
+  .link-deepens { stroke: #6ec6ff; stroke-dasharray: 5,3; }
+  .link-pairs { stroke: #81c784; }
+  .link-tension { stroke: #ef5350; stroke-dasharray: 8,4; }
+  .link-source { stroke: #666; }
+  .link-resonance { stroke: #aed581; stroke-dasharray: 3,3; }
+
+  #tooltip {
+    position: absolute; display: none; background: rgba(20,20,30,0.95);
+    border: 1px solid #444; border-radius: 8px; padding: 12px 16px;
+    font-size: 13px; max-width: 320px; line-height: 1.5;
+    pointer-events: none; z-index: 10; box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  }
+  #tooltip .tt-title { font-weight: bold; font-size: 14px; margin-bottom: 4px; }
+  #tooltip .tt-type { font-size: 11px; color: #888; margin-bottom: 6px; }
+  #tooltip .tt-desc { color: #bbb; }
+
+  #legend {
+    position: absolute; top: 16px; left: 16px; background: rgba(20,20,30,0.9);
+    border: 1px solid #333; border-radius: 8px; padding: 14px 18px; font-size: 12px;
+  }
+  #legend h3 { font-size: 14px; margin-bottom: 8px; color: #fff; }
+  .legend-item { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+  #stats {
+    position: absolute; bottom: 16px; left: 16px; background: rgba(20,20,30,0.9);
+    border: 1px solid #333; border-radius: 8px; padding: 12px 16px; font-size: 12px;
+  }
+  #stats span { color: #aaa; }
+  #stats b { color: #fff; }
+
+  #title-bar {
+    position: absolute; top: 16px; right: 16px; text-align: right;
+  }
+  #title-bar h1 { font-size: 20px; color: #fff; }
+  #title-bar p { font-size: 12px; color: #666; margin-top: 2px; }
+</style>
+</head>
+<body>
+<div id="container">
+  <svg id="graph"></svg>
+  <div id="tooltip"><div class="tt-title"></div><div class="tt-type"></div><div class="tt-desc"></div></div>
+
+  <div id="legend">
+    <h3>节点类型</h3>
+    <div class="legend-item"><div class="legend-dot" style="background:#42a5f5"></div> 书籍</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ffd54f"></div> 洞见卡片</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#66bb6a"></div> 跨书共鸣</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ef5350"></div> 张力/冲突</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ab47bc"></div> Skill候选</div>
+    <h3 style="margin-top:12px">边类型</h3>
+    <div class="legend-item"><svg width="30" height="10"><line x1="0" y1="5" x2="30" y2="5" stroke="#6ec6ff" stroke-dasharray="5,3" stroke-width="2"/></svg> 深化</div>
+    <div class="legend-item"><svg width="30" height="10"><line x1="0" y1="5" x2="30" y2="5" stroke="#81c784" stroke-width="2"/></svg> 配合</div>
+    <div class="legend-item"><svg width="30" height="10"><line x1="0" y1="5" x2="30" y2="5" stroke="#ef5350" stroke-dasharray="8,4" stroke-width="2"/></svg> 张力</div>
+    <div class="legend-item"><svg width="30" height="10"><line x1="0" y1="5" x2="30" y2="5" stroke="#666" stroke-width="2"/></svg> 来源</div>
+  </div>
+
+  <div id="title-bar">
+    <h1>🧠 思维模型库 · 知识图谱</h1>
+    <p>最后更新：2026-04-10 · 5书 11卡 5共鸣</p>
+  </div>
+
+  <div id="stats">
+    <span>书籍</span> <b>5</b> · <span>卡片</span> <b>11</b> · <span>共鸣</span> <b>3</b> · <span>张力</span> <b>2</b> · <span>Skill候选</span> <b>2</b>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+const nodes = [
+  // Books
+  { id: "B-论语", label: "《论语》", type: "book", desc: "学而篇 · 孔子及弟子 · 哲学思想" },
+  { id: "B-思考快与慢", label: "《思考，快与慢》", type: "book", desc: "第一章 · 卡尼曼 · 科学认知" },
+  { id: "B-史记", label: "《史记》", type: "book", desc: "项羽本纪·鸿门宴 · 司马迁 · 历史社科" },
+  { id: "B-道德经", label: "《道德经》", type: "book", desc: "第八章·上善若水 · 老子 · 哲学思想" },
+  { id: "B-百年孤独", label: "《百年孤独》", type: "book", desc: "第一章 · 马尔克斯 · 文学名著" },
+
+  // Cards - Principles
+  { id: "P-001", label: "节能默认律", type: "card", desc: "系统倾向最低能耗路径，而非最优解" },
+  { id: "P-002", label: "柔弱胜刚强", type: "card", desc: "持续的柔性渗透力终将胜过刚性对抗力" },
+
+  // Cards - Human Nature
+  { id: "H-001", label: "理性驾驶员幻觉", type: "card", desc: "以为自己在开车，其实是乘客" },
+  { id: "H-002", label: "性格即命运", type: "card", desc: "未审视的自我=自动驾驶的命运" },
+  { id: "H-003", label: "循环时间与模式重演", type: "card", desc: "你在重演家族/文化的剧本" },
+
+  // Cards - Mental Models
+  { id: "M-001", label: "本立而道生", type: "card", desc: "抓根本，而非追果实" },
+  { id: "M-002", label: "按下暂停键", type: "card", desc: "在直觉与决策间插入缝隙" },
+  { id: "M-003", label: "决策窗口不可逆", type: "card", desc: "犹豫本身就是一种选择" },
+  { id: "M-004", label: "不争即不败", type: "card", desc: "退出零和，建立不可替代性" },
+  { id: "M-005", label: "宿命叙事反转", type: "card", desc: "从终点倒推起点更清醒" },
+
+  // Cards - Society
+  { id: "S-001", label: "示弱作为进攻策略", type: "card", desc: "用姿态换生存的风险置换" },
+
+  // Cross-resonance
+  { id: "R-1", label: "真诚 vs 表演", type: "resonance", desc: "孔子+卡尼曼：人需要持续的真诚性自我校准" },
+  { id: "R-2", label: "根本 vs 捷径", type: "resonance", desc: "人类默认走捷径，修养/理性是逆本能回到根本" },
+  { id: "R-3", label: "未审视=命运循环", type: "resonance", desc: "循环不是诅咒，是未审视的代价" },
+
+  // Tensions
+  { id: "T-1", label: "真诚 vs 示弱话术", type: "tension", desc: "内核如孔子，手腕如刘邦" },
+  { id: "T-2", label: "暂停 vs 决断 vs 等待", type: "tension", desc: "三阶段：暂停→判断窗口→决断/等待" },
+
+  // Skill candidates
+  { id: "SK-1", label: "三阶段决策协议", type: "skill", desc: "Skill候选：暂停→判断窗口→决断或等待" },
+  { id: "SK-2", label: "跨学科共鸣提取器", type: "skill", desc: "Skill候选：自动寻找不同领域的深层同构" },
+];
+
+const links = [
+  // Book → Card (source)
+  { source: "B-论语", target: "M-001", type: "source" },
+  { source: "B-思考快与慢", target: "P-001", type: "source" },
+  { source: "B-思考快与慢", target: "H-001", type: "source" },
+  { source: "B-思考快与慢", target: "M-002", type: "source" },
+  { source: "B-史记", target: "S-001", type: "source" },
+  { source: "B-史记", target: "H-002", type: "source" },
+  { source: "B-史记", target: "M-003", type: "source" },
+  { source: "B-道德经", target: "P-002", type: "source" },
+  { source: "B-道德经", target: "M-004", type: "source" },
+  { source: "B-百年孤独", target: "H-003", type: "source" },
+  { source: "B-百年孤独", target: "M-005", type: "source" },
+
+  // Deepens
+  { source: "H-001", target: "H-002", type: "deepens" },
+  { source: "H-002", target: "H-003", type: "deepens" },
+  { source: "P-002", target: "M-004", type: "deepens" },
+
+  // Pairs
+  { source: "M-002", target: "P-001", type: "pairs" },
+  { source: "M-005", target: "M-003", type: "pairs" },
+  { source: "M-005", target: "H-003", type: "pairs" },
+  { source: "P-002", target: "S-001", type: "pairs" },
+  { source: "M-001", target: "S-001", type: "pairs" },
+  { source: "H-001", target: "M-002", type: "pairs" },
+
+  // Tensions
+  { source: "M-002", target: "M-003", type: "tension" },
+
+  // Resonance connections
+  { source: "R-1", target: "M-001", type: "resonance" },
+  { source: "R-1", target: "H-001", type: "resonance" },
+  { source: "R-2", target: "M-001", type: "resonance" },
+  { source: "R-2", target: "P-001", type: "resonance" },
+  { source: "R-3", target: "H-003", type: "resonance" },
+  { source: "R-3", target: "H-002", type: "resonance" },
+  { source: "R-3", target: "P-001", type: "resonance" },
+
+  // Tension connections
+  { source: "T-1", target: "M-001", type: "tension" },
+  { source: "T-1", target: "S-001", type: "tension" },
+  { source: "T-2", target: "M-002", type: "tension" },
+  { source: "T-2", target: "M-003", type: "tension" },
+  { source: "T-2", target: "M-004", type: "tension" },
+
+  // Skill connections
+  { source: "SK-1", target: "M-002", type: "pairs" },
+  { source: "SK-1", target: "M-003", type: "pairs" },
+  { source: "SK-1", target: "M-004", type: "pairs" },
+  { source: "SK-1", target: "T-2", type: "pairs" },
+  { source: "SK-2", target: "R-1", type: "pairs" },
+  { source: "SK-2", target: "R-2", type: "pairs" },
+  { source: "SK-2", target: "R-3", type: "pairs" },
+];
+
+const colorMap = {
+  book: "#42a5f5",
+  card: "#ffd54f",
+  resonance: "#66bb6a",
+  tension: "#ef5350",
+  skill: "#ab47bc"
+};
+const radiusMap = { book: 22, card: 14, resonance: 16, tension: 16, skill: 18 };
+
+const svg = d3.select("#graph");
+const width = window.innerWidth;
+const height = window.innerHeight;
+const tooltip = d3.select("#tooltip");
+
+const simulation = d3.forceSimulation(nodes)
+  .force("link", d3.forceLink(links).id(d => d.id).distance(d => {
+    if (d.type === "source") return 90;
+    return 120;
+  }))
+  .force("charge", d3.forceManyBody().strength(-300))
+  .force("center", d3.forceCenter(width / 2, height / 2))
+  .force("collision", d3.forceCollide().radius(d => radiusMap[d.type] + 8));
+
+const linkG = svg.append("g");
+const nodeG = svg.append("g");
+const labelG = svg.append("g");
+
+const link = linkG.selectAll("line")
+  .data(links).enter().append("line")
+  .attr("class", d => `link link-${d.type}`)
+  .attr("stroke-width", d => d.type === "tension" ? 2.5 : 1.5);
+
+const node = nodeG.selectAll("circle")
+  .data(nodes).enter().append("circle")
+  .attr("r", d => radiusMap[d.type])
+  .attr("fill", d => colorMap[d.type])
+  .attr("fill-opacity", 0.85)
+  .attr("stroke", d => colorMap[d.type])
+  .attr("stroke-width", 2)
+  .attr("stroke-opacity", 0.4)
+  .style("cursor", "pointer")
+  .call(d3.drag()
+    .on("start", (e, d) => { if (!e.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+    .on("drag", (e, d) => { d.fx = e.x; d.fy = e.y; })
+    .on("end", (e, d) => { if (!e.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; })
+  );
+
+node.on("mouseover", (e, d) => {
+  tooltip.style("display", "block")
+    .style("left", (e.pageX + 15) + "px")
+    .style("top", (e.pageY - 10) + "px");
+  tooltip.select(".tt-title").text(d.label);
+  tooltip.select(".tt-type").text(
+    d.type === "book" ? "📖 书籍" :
+    d.type === "card" ? "💡 洞见卡片 · " + d.id :
+    d.type === "resonance" ? "🌊 跨书共鸣" :
+    d.type === "tension" ? "⚔️ 张力/冲突" : "🧠 Skill 候选"
+  );
+  tooltip.select(".tt-desc").text(d.desc);
+  node.attr("fill-opacity", n => {
+    const connected = links.some(l =>
+      (l.source.id === d.id && l.target.id === n.id) ||
+      (l.target.id === d.id && l.source.id === n.id)
+    );
+    return (n.id === d.id || connected) ? 1 : 0.15;
+  });
+  link.attr("stroke-opacity", l =>
+    (l.source.id === d.id || l.target.id === d.id) ? 0.8 : 0.05
+  );
+})
+.on("mousemove", e => {
+  tooltip.style("left", (e.pageX + 15) + "px").style("top", (e.pageY - 10) + "px");
+})
+.on("mouseout", () => {
+  tooltip.style("display", "none");
+  node.attr("fill-opacity", 0.85);
+  link.attr("stroke-opacity", 0.4);
+});
+
+const label = labelG.selectAll("text")
+  .data(nodes).enter().append("text")
+  .attr("class", "node-label")
+  .attr("dy", d => radiusMap[d.type] + 14)
+  .text(d => d.label);
+
+simulation.on("tick", () => {
+  link.attr("x1", d => d.source.x).attr("y1", d => d.source.y)
+      .attr("x2", d => d.target.x).attr("y2", d => d.target.y);
+  node.attr("cx", d => d.x).attr("cy", d => d.y);
+  label.attr("x", d => d.x).attr("y", d => d.y);
+});
+</script>
+</body>
+</html>

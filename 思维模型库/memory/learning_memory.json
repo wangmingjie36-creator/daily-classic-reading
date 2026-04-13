@@ -1,0 +1,218 @@
+{
+  "version": "1.1",
+  "created": "2026-04-10",
+  "last_updated": "2026-04-12",
+  "last_weekly_review": "2026-04-12_W15",
+  "description": "自进化学习系统的持久化记忆库 — 所有定时任务和对话中提取的元信号在此汇聚",
+
+  "daily_signals": [
+    {
+      "date": "2026-04-06",
+      "source": "daily-classic-reading",
+      "book": "论语",
+      "chapter": "学而篇",
+      "category": "哲学思想",
+      "topics": ["学习方法", "真诚", "根本思维"],
+      "new_cards": ["M-001"],
+      "cross_resonance": [],
+      "quality_score": 8
+    },
+    {
+      "date": "2026-04-07",
+      "source": "daily-classic-reading",
+      "book": "红楼梦",
+      "chapter": "第一回·好了歌",
+      "category": "文学名著",
+      "topics": ["虚无", "执念", "盛衰循环", "身份认知错位"],
+      "new_cards": ["H-004"],
+      "cross_resonance": [],
+      "quality_score": 8,
+      "note": "补录 — 任务当日已生成文件但未提炼卡片"
+    },
+    {
+      "date": "2026-04-08",
+      "source": "daily-classic-reading",
+      "book": "思考，快与慢",
+      "chapter": "第一章·系统1与系统2",
+      "category": "科学认知",
+      "topics": ["双系统", "认知偏误", "自控力", "决策"],
+      "new_cards": ["P-001", "H-001", "M-002"],
+      "cross_resonance": ["共鸣#1:真诚vs表演", "共鸣#2:根本vs捷径"],
+      "quality_score": 9
+    },
+    {
+      "date": "2026-04-08",
+      "source": "daily-classic-reading",
+      "book": "史记",
+      "chapter": "项羽本纪·鸿门宴",
+      "category": "历史社科",
+      "topics": ["权力博弈", "性格缺陷", "决策窗口", "信息管理"],
+      "new_cards": ["S-001", "H-002", "M-003"],
+      "cross_resonance": ["张力#1:真诚vs示弱话术", "共鸣#4:决策时的自我欺骗"],
+      "quality_score": 9
+    },
+    {
+      "date": "2026-04-09",
+      "source": "daily-classic-reading",
+      "book": "道德经",
+      "chapter": "第八章·上善若水",
+      "category": "哲学思想",
+      "topics": ["柔弱", "不争", "处下", "时机"],
+      "new_cards": ["P-002", "M-004"],
+      "cross_resonance": ["张力#2:暂停vs决断vs等待时机"],
+      "quality_score": 8
+    },
+    {
+      "date": "2026-04-10",
+      "source": "daily-classic-reading",
+      "book": "百年孤独",
+      "chapter": "第一章·开篇",
+      "category": "文学名著",
+      "topics": ["循环时间", "宿命", "命名与控制", "好奇心的代价"],
+      "new_cards": ["H-003", "M-005"],
+      "cross_resonance": ["共鸣#3:未审视的模式=自动驾驶的命运"],
+      "quality_score": 8
+    },
+    {
+      "date": "2026-04-11",
+      "source": "daily-classic-reading",
+      "book": "枪炮、病菌与钢铁",
+      "chapter": "第一章·一万三千年的历史",
+      "category": "历史社科",
+      "topics": ["环境决定论", "近端远端原因", "积累的乘法效应", "初始条件", "病菌与征服"],
+      "new_cards": ["S-002", "P-003"],
+      "cross_resonance": ["共鸣#5:积累的不对称性", "张力#3:环境决定论vs个人能动性"],
+      "quality_score": 9,
+      "note": "自动任务content filtering失败×3次，手动补录"
+    },
+    {
+      "date": "2026-04-12",
+      "source": "daily-classic-reading",
+      "book": "自私的基因",
+      "chapter": "第一章·为什么会有人呢",
+      "category": "科学认知",
+      "topics": ["基因自私", "生存机器", "分析粒度", "默认设置覆盖", "环境塑造行为"],
+      "new_cards": ["P-004", "M-006", "S-003"],
+      "cross_resonance": ["共鸣#6:你不是驾驶员", "共鸣#7:个体是载具(META-001)", "共鸣#8:认知错位三重奏", "张力#4:不争vs自私竞争"],
+      "quality_score": 9
+    }
+  ],
+
+  "weekly_review_signals": [
+    {
+      "week": "W15_2026-04-06_to_04-12",
+      "new_resonances": ["共鸣#7:个体是载具", "共鸣#8:认知错位三重奏"],
+      "new_tensions": ["张力#4:不争vs自私竞争"],
+      "meta_cards_created": ["META-001"],
+      "interest_drift": "从东方哲学/历史向西方科学/社科扩展",
+      "key_insight": "四层默认程序假说形成——基因/认知/性格/文化都在替你运行",
+      "network_density_note": "本周17→18张卡片，新增7条跨卡关系，网络密度显著提升"
+    }
+  ],
+
+  "category_balance": {
+    "哲学思想": 2,
+    "科学认知": 2,
+    "历史社科": 2,
+    "文学名著": 2
+  },
+
+  "card_distribution": {
+    "P_底层原理": 4,
+    "H_人性行为": 4,
+    "M_思维模型": 6,
+    "S_社会结构": 3,
+    "META_元卡片": 1
+  },
+
+  "user_interest_signals": {
+    "high_engagement_topics": ["决策", "认知偏误", "权力博弈", "跨学科共鸣", "主体性幻觉", "默认设置覆盖"],
+    "frequently_asked": ["每日阅读", "自动化", "系统学习"],
+    "interest_drift_W15": "本周后半段明显向西方科学经典倾斜（枪炮+自私的基因），对'环境vs个体'张力尤其感兴趣",
+    "knowledge_gaps_detected": [
+      "S类卡片(3张)相对M类(6张)偏少",
+      "自然科学/物理/数学维度完全空白",
+      "西方哲学尚未涉及（目前哲学=中国哲学）",
+      "经济学/博弈论相关洞见可从更多书目补充"
+    ],
+    "decision_patterns": ["偏好全面选项", "喜欢系统化方案", "重视自动化和持久化"]
+  },
+
+  "task_health": {
+    "daily-classic-reading": {
+      "success_rate": 0.67,
+      "total_runs": 8,
+      "successful_runs": 5,
+      "failures": [
+        {"date": "2026-04-10", "reason": "content_filtering", "book": "前赤壁赋", "fix": "added retry logic"},
+        {"date": "2026-04-11", "reason": "content_filtering_x3", "book": "未知（3次均被过滤）", "fix": "改造prompt：优先现代非虚构/西方经典，暂回避中国古典诗词；加入占位文件降级机制"}
+      ],
+      "avg_quality": 8.5,
+      "W15_note": "4/11和4/12的质量评分均为9分，prompt优化后质量稳步上升"
+    },
+    "weekly-meta-learning": {
+      "success_rate": 1.0,
+      "total_runs": 1,
+      "note": "本周首次运行"
+    }
+  },
+
+  "skill_candidates": [
+    {
+      "name": "第一性原理拆解",
+      "trigger_count": 4,
+      "related_cards": ["M-001", "P-001", "M-003", "S-002"],
+      "status": "monitoring",
+      "description": "给定复杂问题，回到根本重新推导",
+      "W15_note": "S-002(近端/远端原因)强化了此候选，trigger_count +1"
+    },
+    {
+      "name": "三阶段决策协议",
+      "trigger_count": 5,
+      "related_cards": ["M-002", "M-003", "M-004", "H-001", "M-006"],
+      "status": "ready_to_create",
+      "description": "暂停(系统2上线) → 判断窗口(是否时机) → 决断或等待",
+      "W15_note": "M-006(覆盖默认设置)进一步强化此协议的第一步，trigger_count +1"
+    },
+    {
+      "name": "跨学科共鸣提取器",
+      "trigger_count": 6,
+      "related_cards": ["所有跨书共鸣", "META-001"],
+      "status": "ready_to_create",
+      "description": "给定两个不同领域的文本，自动寻找深层同构",
+      "W15_note": "本周首个META元卡片诞生，验证了此skill的价值，trigger_count +1"
+    }
+  ],
+
+  "prompt_optimization_log": [
+    {
+      "date": "2026-04-10",
+      "task": "daily-classic-reading",
+      "change": "added content filtering retry logic",
+      "reason": "前赤壁赋触发filtering导致任务失败",
+      "effect": "部分改善，但4/11仍失败3次"
+    },
+    {
+      "date": "2026-04-12",
+      "task": "daily-classic-reading",
+      "change": "建议：增加备选书单机制，每日任务携带3本候选书",
+      "reason": "单本选择失败率仍偏高(33%)，需要降级方案",
+      "effect": "待实施",
+      "source": "W15元学习周报"
+    }
+  ],
+
+  "evolution_history": [
+    {
+      "date": "2026-04-12",
+      "event": "W15_meta_learning_first_run",
+      "changes": [
+        "创建首张META元卡片(META-001)",
+        "新增3条跨书共鸣(#7, #8)和1条张力(#4)",
+        "skill_candidates全部trigger_count +1",
+        "识别4个知识缺口方向",
+        "建议下周阅读方向：西方哲学+物理/数学+经济学"
+      ]
+    }
+  ]
+}
